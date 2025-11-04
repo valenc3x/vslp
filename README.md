@@ -17,7 +17,8 @@ Descripción del compilador/intérprete
 Descripción de análisis léxico
 ------------
 Patrones de construcción
-    
+
+```
     INISET   =  \#set
     NAMETAG  =  \:
     SET      =  set
@@ -39,28 +40,38 @@ Patrones de construcción
     ID       =  (-|\w)+
     LKEY     =  \{
     RKEY     =  \}
+```
 
 Descripción de análisis sintáctico
 ---
 Gramática Formal
 
-    A -> S C
-    S -> C
-    S -> #set : id D
-    D -> set id = E D
-    D -> style = id Y D
-    D -> #endset
-    E -> set ( id J
-    Y -> style ( ' selector ' J
-    J -> , id : id J
-    J -> ) ;
-    C -> #template : id T
-    T -> B #endtemplate
-    T -> #endtemplate
-    B -> {% id I
-    B -> for ( num , num ) { B }
-    I -> B %}
-    I -> %}
+```mermaid
+graph TD
+    A["A"] --> S["S"]
+    A --> C["C"]
+    S --> C
+    S --> D["#set : id D"]
+    D --> E["set id = E D"]
+    D --> Y["style = id Y D"]
+    D --> ENDSET["#endset"]
+    E --> J1["set ( id J"]
+    Y --> J2["style ( 'selector' J"]
+    J1 --> J3["J"]
+    J2 --> J3
+    J3 --> J4[", id : id J"]
+    J3 --> SEMI[") ;"]
+    J4 --> J3
+    C --> T["#template : id T"]
+    T --> B1["B #endtemplate"]
+    T --> ENDTEMPLATE["#endtemplate"]
+    B1 --> B["B"]
+    B --> I1["{% id I"]
+    B --> FOR["for ( num , num ) { B }"]
+    I1 --> I2["B %}"]
+    I1 --> CLOSE["%}"]
+    I2 --> B
+```
 
 Se utilizó un parser LL de implementación propia. Se realiza análisis de First y Follow, se crea la tabla de parseo y se realiza el análisis semántico, al tiempo que se genera la entrada para análisis semantico.
 
